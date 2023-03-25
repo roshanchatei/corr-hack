@@ -43,19 +43,7 @@ const Index = () => {
 
     return (
         <>
-            {/*<AppBar*/}
-            {/*    color={"transparent"}*/}
-            {/*    elevation={0}*/}
-            {/*    position="fixed"*/}
-            {/*    sx={{*/}
-            {/*        background: '#F6F2E6',*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    <Box pt={0.6} ml={2}>*/}
-            {/*        <img src={'/images/logo-dark.svg'} width={'55px'} />*/}
-            {/*    </Box>*/}
 
-            {/*</AppBar>*/}
             <Box width={'100%'} height={'100vh'} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                 <Box bgcolor={'#898989'} width={'380px'} p={3} pt={4} mt={3} borderRadius={3}>
                     <CustomTextField

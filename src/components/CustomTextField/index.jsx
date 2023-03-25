@@ -53,8 +53,9 @@ const RedditTextField = styled((props) => (
             borderColor: theme.palette.primary.main,
         },
         "&.Mui-focused": {
-            backgroundColor: "transparent",
+            backgroundColor: "#FFF",
             borderColor: theme.palette.primary.main,
+
         },
     },
 }));
