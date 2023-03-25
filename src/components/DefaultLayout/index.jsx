@@ -42,7 +42,7 @@ const Index = (props) => {
                 <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'} color={'#181935'}>
                     <Box display={'flex'} alignItems={'center'}>
                         <Box pt={0.7} ml={2} mr={6} onClick={handleGoToHome} sx={{cursor: 'pointer'}}>
-                            <img src={'/images/logo-color.svg'} width={'55px'} />
+                            <img src={'/images/logo.svg'} width={'55px'} />
                         </Box>
                         <Box
                             fontFamily={'Saira Condensed, sans-serif'}

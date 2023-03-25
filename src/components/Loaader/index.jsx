@@ -35,7 +35,7 @@ const Loader = () => {
                 <img
                     alt="logo"
                     style={{ width: 200, height: "auto" }}
-                    src={"/images/logo-color.svg"}
+                    src={"/images/logo.svg"}
                 />
                 <div style={{ width: "20%", marginTop: 15 }}>
                     <LinearProgress
