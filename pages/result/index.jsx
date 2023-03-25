@@ -1,19 +1,31 @@
-import {Box, Container, Grid} from "@mui/material";
+import {Box, Container, Grid, IconButton} from "@mui/material";
 import { ResponsiveBar } from '@nivo/bar'
 import {useEffect, useState} from "react";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { saveAs } from 'file-saver';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import {staticData} from "@/src/store/helper";
 
 const Index = () => {
 
     const [response, setResponse] = useState({});
+    const [fico, setFico] = useState([]);
+    const [cardLimit, setCardLimit] = useState([]);
+    const [modelOutput, setModelOutput] = useState([]);
+    const [interestRate, setInterestRate] = useState([]);
     // const [stringData, setResponse] = useState({});
+
 
     useEffect(() => {
         fetch("http://localhost:8080/upload")
             .then((response) => response.json())
-            .then((res) => {setResponse(res)})
+            .then((res) => {
+                setResponse(res)
+                setFico(arrangeData(res.file_data_curr, 'fico'))
+                setCardLimit(arrangeData(res.file_data_curr, 'card_limit'))
+                setModelOutput(arrangeData(res.file_data_curr, 'model_output'))
+                setInterestRate(arrangeData(res.file_data_curr, 'card_interest_rate'))
+            })
             .catch((error) => console.log(error));
 
 
@@ -37,9 +49,9 @@ const Index = () => {
         //     .catch(error => console.log('error', error));
     }, []);
 
-    // useEffect(() => {
-    //     console.log(response)
-    // }, [response])
+    useEffect(() => {
+        console.log(fico)
+    }, [fico])
 
     function generatePdfAndDownload() {
         const input = document.getElementById('pdf-content');
@@ -66,7 +78,7 @@ const Index = () => {
         },
     ]
 
-    const arrangeData = (data) => {
+    const arrangeData = (data, dataKey) => {
         if(data){
             let data1 = data.slice(0, 9);
             let data2 = data.slice(10, 19);
@@ -74,57 +86,62 @@ const Index = () => {
 
             const newData = []
             for(let i = 0; i < data1.length; i++){
+
                 newData.push({
                     "monthly_salary": data[i].monthly_salary,
-                    "current": data[i].fico,
-                    "previous": data[i].fico,
+                    "current": dataKey === 'card_interest_rate' ? parseFloat((data1[i])[dataKey]) : (data1[i])[dataKey],
+                    "previous": dataKey === 'card_interest_rate' ? parseFloat((data2[i])[dataKey]) : (data2[i])[dataKey],
                 })
             }
 
-            console.log(newData)
+            // console.log(newData)
             return newData
         }
     }
 
-    arrangeData(response?.file_data_curr)
-
 
     return (
         <>
-            <button onClick={generatePdfAndDownload}>Generate PDF</button>
+            <Box width={'100%'} display={'flex'} justifyContent={'flex-end'} pr={4} pt={4}>
+                <IconButton onClick={generatePdfAndDownload}>
+                    <FileDownloadIcon />
+                </IconButton>
+            </Box>
             <Box width={'100%'} id="pdf-content">
                 <Container maxWidth={'md'}>
-                    <Box color={'#006ff8'} fontSize={'24px'} fontWeight={700} mb={2}>
-                        Vintage Selection
-                    </Box>
-                    <Box ml={2} mb={5}>
-                        The model Risk Score shows incremental model performance compared to other
-                        benchmarks. While there is no direct benchmark available for the CLD model
-                        since it’s a bespoke score, it is still compared to the other scores, since they are
-                        being used in the current CLD policy.
-                        Below charts provide the overall performance comparison of CLD model with
-                        other benchmarks. (‘Current’ here refers to the current XGBoost model)
-                    </Box>
+                    <Box mt={4} />
+                    {
+                        staticData.data.map((each)=>(
+                            <>
+                                <Box color={'#006ff8'} fontSize={'24px'} fontWeight={700} mb={2}>
+                                    {each.title}
+                                </Box>
+                                <Box ml={2} mb={5}>
+                                    {each.value}
+                                </Box>
+                            </>
+                        ))
+                    }
 
                     <Grid container>
                         <Grid item xs={12}>
                             <Box height={'400px'} mb={6}>
-                                <MyResponsiveBar data={data}/>
+                                <MyResponsiveBar data={fico} yaxis={'fico'}/>
                             </Box>
                         </Grid>
                         <Grid item xs={12}>
                             <Box height={'400px'} mb={6}>
-                                <MyResponsiveBar data={data}/>
+                                <MyResponsiveBar data={cardLimit} yaxis={'cardLimit'}/>
                             </Box>
                         </Grid>
                         <Grid item xs={12}>
                             <Box height={'400px'} mb={6}>
-                                <MyResponsiveBar data={data}/>
+                                <MyResponsiveBar data={modelOutput} yaxis={'modelOutput'}/>
                             </Box>
                         </Grid>
                         <Grid item xs={12}>
                             <Box height={'400px'} mb={6}>
-                                <MyResponsiveBar data={data}/>
+                                <MyResponsiveBar data={interestRate} yaxis={'interestRate'}/>
                             </Box>
                         </Grid>
                     </Grid>
@@ -136,7 +153,7 @@ const Index = () => {
 };
 
 
-const MyResponsiveBar = ({ data }) => {
+const MyResponsiveBar = ({ data, yaxis }) => {
 
 
     return (
@@ -176,7 +193,7 @@ const MyResponsiveBar = ({ data }) => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'fico',
+                legend: `${yaxis || 'Y axis'}`,
                 legendPosition: 'middle',
                 legendOffset: -40
             }}

@@ -6,11 +6,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Form from "@/src/page-components/home/Form";
 import {useUser} from "@/src/store/UserContext";
+import {useRouter} from "next/router";
 
 const Index = () => {
 
     const { enqueueSnackbar } = useSnackbar();
     const [user, setUser] = useUser();
+    const Router = useRouter();
+
 
     const inputRef = useRef(null);
     const [pop, setPop] = useState(false);
@@ -100,12 +103,22 @@ const Index = () => {
   return (
       <>
         <Box width={'100%'}>
+            <Box width={'100%'} height={'90vh'} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                <Button
+                    onClick={handleClick}
+                    variant={"contained"}
+                    disableElevation
+                    fullWidth
+                    sx={{
+                        borderRadius: "15px",
+                        py: 1.5,
+                        width: '200px'
+                    }}
+                >
+                    Submit Form
+                </Button>
+            </Box>
 
-            <Button
-                onClick={handleClick}
-            >
-                Open
-            </Button>
             <Dialog
                 open={pop}
                 onClose={handleClose}
@@ -182,6 +195,7 @@ const Index = () => {
                                 sendFileToApi();
                                 handleTextData();
                                 setPop(false);
+                                Router.push('/result')
                             }}
                             variant={"contained"}
                             disableElevation
